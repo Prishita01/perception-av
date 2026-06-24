@@ -1,0 +1,6 @@
+path: ../training/hard_cases
+train: images
+val: images
+
+nc: 7
+names: ['person', 'car', 'truck', 'bus', 'motorcycle', 'bicycle', 'traffic cone']
