@@ -27,3 +27,4 @@ training/hard_cases/labels.cache
 .DS_Store
 inference/output_test.jpg
 inference/depth_outputs/
+training/hard_cases.yaml

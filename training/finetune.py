@@ -59,18 +59,18 @@ def main():
     print(f"delta     mAP50={ft_map50-base_map50:+.4f}  mAP50-95={ft_map-base_map:+.4f}")
 
     with mlflow.start_run(run_name="yolo26n-hard-case-ft-20ep"):
-        mlflow.log_param("model",    "yolo26n")
-        mlflow.log_param("epochs",   20)
-        mlflow.log_param("batch",    8)
-        mlflow.log_param("frames",   50)
-        mlflow.log_param("dataset",  "nuscenes-mini-hard-cases")
+        mlflow.log_param("model", "yolo26n")
+        mlflow.log_param("epochs", 20)
+        mlflow.log_param("batch", 8)
+        mlflow.log_param("frames", 50)
+        mlflow.log_param("dataset", "nuscenes-mini-hard-cases")
 
-        mlflow.log_metric("baseline_mAP50",    base_map50)
+        mlflow.log_metric("baseline_mAP50", base_map50)
         mlflow.log_metric("baseline_mAP50_95", base_map)
-        mlflow.log_metric("ft_mAP50",          ft_map50)
-        mlflow.log_metric("ft_mAP50_95",       ft_map)
-        mlflow.log_metric("delta_mAP50",       round(ft_map50 - base_map50, 4))
-        mlflow.log_metric("delta_mAP50_95",    round(ft_map - base_map, 4))
+        mlflow.log_metric("ft_mAP50", ft_map50)
+        mlflow.log_metric("ft_mAP50_95", ft_map)
+        mlflow.log_metric("delta_mAP50", round(ft_map50 - base_map50, 4))
+        mlflow.log_metric("delta_mAP50_95", round(ft_map - base_map, 4))
 
         for name, v in base_ap.items():
             mlflow.log_metric(f"baseline_{name}_AP50", v)

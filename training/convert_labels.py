@@ -85,59 +85,68 @@ def priority_frame_ids():
     conn.close()
     return ids
 
-
 def main():
     nusc = NuScenes(version='v1.0-mini', dataroot='data/raw', verbose=False)
-    target_ids = priority_frame_ids()
-    print(f"{len(target_ids)} frames to convert")
 
     out = pathlib.Path('training/hard_cases')
-    (out / 'images').mkdir(parents=True, exist_ok=True)
-    (out / 'labels').mkdir(parents=True, exist_ok=True)
+    (out / 'images' / 'train').mkdir(parents=True, exist_ok=True)
+    (out / 'images' / 'val').mkdir(parents=True, exist_ok=True)
+    (out / 'labels' / 'train').mkdir(parents=True, exist_ok=True)
+    (out / 'labels' / 'val').mkdir(parents=True, exist_ok=True)
+
+    all_samples = list(nusc.sample)
+    # deterministic 80/20 split — same split every run
+    split_idx = int(len(all_samples) * 0.8)
+    train_samples = all_samples[:split_idx]
+    val_samples   = all_samples[split_idx:]
+
+    print(f"train: {len(train_samples)} samples  val: {len(val_samples)} samples")
 
     converted, skipped = 0, 0
 
-    for sample in nusc.sample:
-        cam_data = nusc.get('sample_data', sample['data']['CAM_FRONT'])
-        frame_id = cam_data['token']
+    for split_name, samples in [('train', train_samples), ('val', val_samples)]:
+        for sample in samples:
+            cam_data = nusc.get('sample_data', sample['data']['CAM_FRONT'])
+            frame_id = cam_data['token']
+            img_w, img_h = cam_data['width'], cam_data['height']
+            labels = []
 
-        if frame_id not in target_ids:
-            continue
+            for ann_token in sample['anns']:
+                ann = nusc.get('sample_annotation', ann_token)
+                cls = CATEGORY_MAP.get(ann['category_name'])
+                if cls is None:
+                    continue
 
-        img_w, img_h = cam_data['width'], cam_data['height']
-        labels = []
+                coords = project_to_image(nusc, ann_token, cam_data)
+                if coords is None:
+                    continue
 
-        for ann_token in sample['anns']:
-            ann = nusc.get('sample_annotation', ann_token)
-            cls = CATEGORY_MAP.get(ann['category_name'])
-            if cls is None:
+                xc, yc, w, h = to_yolo_format(*coords, img_w, img_h)
+                if w > 0.01 and h > 0.01:
+                    labels.append(f"{CLASSES.index(cls)} {xc:.6f} {yc:.6f} {w:.6f} {h:.6f}")
+
+            if not labels:
+                skipped += 1
                 continue
 
-            coords = project_to_image(nusc, ann_token, cam_data)
-            if coords is None:
-                continue
-
-            xc, yc, w, h = to_yolo_format(*coords, img_w, img_h)
-            if w > 0.01 and h > 0.01:
-                labels.append(f"{CLASSES.index(cls)} {xc:.6f} {yc:.6f} {w:.6f} {h:.6f}")
-
-        if not labels:
-            skipped += 1
-            continue
-
-        shutil.copy(
-            os.path.join('data/raw', cam_data['filename']),
-            out / 'images' / f"{frame_id}.jpg"
-        )
-        (out / 'labels' / f"{frame_id}.txt").write_text('\n'.join(labels))
-        converted += 1
+            shutil.copy(
+                os.path.join('data/raw', cam_data['filename']),
+                out / 'images' / split_name / f"{frame_id}.jpg"
+            )
+            (out / 'labels' / split_name / f"{frame_id}.txt").write_text('\n'.join(labels))
+            converted += 1
 
     print(f"{converted} converted, {skipped} skipped")
 
+    abs_path = str(out.absolute())
     pathlib.Path('training/hard_cases.yaml').write_text(
-        f"path: ../training/hard_cases\ntrain: images\nval: images\n\nnc: {len(CLASSES)}\nnames: {CLASSES}\n"
+        f"path: {abs_path}\n"
+        f"train: images/train\n"
+        f"val: images/val\n\n"
+        f"nc: {len(CLASSES)}\n"
+        f"names: {CLASSES}\n"
     )
-
+    print("dataset config updated")
 
 if __name__ == '__main__':
     main()
