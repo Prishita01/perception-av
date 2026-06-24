@@ -32,3 +32,7 @@ mlruns/
 training/hard_cases/images/
 training/hard_cases/labels/
 training/hard_cases/labels.cache
+runs/
+mlruns/
+*.db
+training/hard_cases/images/
