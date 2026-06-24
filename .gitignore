@@ -28,4 +28,7 @@ inference/output_test.jpg
 depth_outputs/
 mlruns/
 *.db
-*.jpg
+*.jpgruns/
+training/hard_cases/images/
+training/hard_cases/labels/
+training/hard_cases/labels.cache
