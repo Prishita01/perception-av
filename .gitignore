@@ -6,33 +6,24 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-.Python
-
 data/
 checkpoints/
 *.pt
 *.npy
 
 mlflow_local.db
+mlflow.db
 mlruns/
-mlflow/
+runs/
 
 airflow/logs/
 logs/
 airflow/plugins/
 
-inference/output_test.jpg
-
-.DS_Store
-
-depth_outputs/
-mlruns/
-*.db
-*.jpgruns/
 training/hard_cases/images/
 training/hard_cases/labels/
 training/hard_cases/labels.cache
-runs/
-mlruns/
-*.db
-training/hard_cases/images/
+
+.DS_Store
+inference/output_test.jpg
+inference/depth_outputs/
