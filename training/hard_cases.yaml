@@ -1,6 +1,6 @@
-path: ../training/hard_cases
-train: images
-val: images
+path: /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/training/hard_cases
+train: images/train
+val: images/val
 
 nc: 7
 names: ['person', 'car', 'truck', 'bus', 'motorcycle', 'bicycle', 'traffic cone']
