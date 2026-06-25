@@ -19,11 +19,11 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - ../data:/opt/airflow/data
-    - ../ingestion:/opt/airflow/ingestion
-    - ../.env:/opt/airflow/.env
-    - ../inference:/opt/airflow/inference
-    - ../db:/opt/airflow/mlflow_local.db
+    - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/data:/opt/airflow/data
+    - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/ingestion:/opt/airflow/ingestion
+    - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/.env:/opt/airflow/.env
+    - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/inference:/opt/airflow/inference
+    - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/mlflow_local.db:/opt/airflow/mlflow_local.db
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -166,9 +166,9 @@ services:
     env_file:
       - .env
     volumes:
-      - ../inference:/opt/airflow/inference
-      - ../data:/opt/airflow/data
-      - ../.env:/opt/airflow/.env
+      - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/inference:/opt/airflow/inference
+      - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/data:/opt/airflow/data
+      - /Users/prishita/Desktop/AB_Proj2026/production-perception-platform/.env:/opt/airflow/.env
     ports:
       - "8001:8000"
     command: uvicorn server:app --host 0.0.0.0 --port 8000 --app-dir /opt/airflow/inference

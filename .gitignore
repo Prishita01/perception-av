@@ -28,3 +28,5 @@ training/hard_cases/labels.cache
 inference/output_test.jpg
 inference/depth_outputs/
 training/hard_cases.yaml
+dbt/target/
+dbt/logs/
