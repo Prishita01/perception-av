@@ -46,6 +46,11 @@ Fine-tuning used an 80/20 train/val split (323 train, 81 held-out val frames). T
 ![Sample detections](docs/detections_sample.jpg)
 
 ---
+## Grafana dashboard
+
+![Grafana dashboard](docs/grafana_dashboard.png)
+
+Four panels connected to PostgreSQL via dbt analytics views: detection distribution by class, average confidence per class, detection density over time, and retraining queue breakdown by mining strategy.
 
 ## Training curves
 
